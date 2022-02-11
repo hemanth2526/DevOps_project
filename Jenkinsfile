@@ -19,7 +19,7 @@
 
         stage('Push Image to docker Hub') {
             steps{
-                sh 'docker push hemanth2526/pipelinetestprod:{BUILD_NUMBER} '
+                sh 'docker push hemanth2526/pipelinetestprod:${BUILD_NUMBER} '
             }
         }
 
