@@ -25,7 +25,7 @@
 
         stage('deploy to docker host'){
             steps{
-                sh 'docker -H tcp://10.1.1.200:2375 stop prodweb1 '
+                sh 'docker -H tcp://10.1.1.200:2375 stop prodweb1'
                 sh 'docker -H tcp://10.1.1.200:2375 run --rm -dit --name prodweb1 --hostname prodweb1 -p 9000:80 hemanth2526/pipelinetestprod:${BUILD_NUMBER}'
             }
         }
