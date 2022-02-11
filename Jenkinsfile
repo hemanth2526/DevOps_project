@@ -12,8 +12,7 @@
         stage('Build docker Image') {
             steps {
                 sh 'cd /var/lib/jenkins/workspace/pipeline2/DevOps_project'
-                sh 'cp /var/lib/jenkins/workspace/pipeline2/DevOps_project /var/lib/jenkins/workspace/pipeline2'
-                sh 'cd /var/lib/jenkins/workspace/pipeline2'
+                sh 'cp DevOps_project  /var/lib/jenkins/workspace/pipeline2'
                 sh 'docker build -t hemanth2526/pipelinetestprod:${BUILD_NUMBER} . '
             }
         }
