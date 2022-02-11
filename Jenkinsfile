@@ -2,7 +2,7 @@
     agent any
     stages {
 
-        stage('Cloning Git Repo') {
+        stage('Cloning Github Repo') {
             steps {
                 sh 'rm -rf /var/lib/jenkins/workspace/pipeline2/DevOps_project'
                 sh 'git clone https://github.com/hemanth2526/DevOps_project.git'
