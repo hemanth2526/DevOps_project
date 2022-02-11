@@ -1,49 +1,32 @@
-pipeline {
-    environment {
-        registry = 'sreeharshav/devopsb17'
-        registryCredential = 'dockerhub_id'
-        dockerSwarmManager = '10.40.1.26:2375'
-        dockerhost = '10.40.1.26'
-        dockerImage = ''
-    }
+ pipeline {
     agent any
     stages {
-        stage('Cloning our Git') {
+
+        stage('Cloning Github Repo') {
             steps {
-                git 'https://github.com/mavrick202/dockertest1.git'
+                sh 'rm -rf DecOps_project'
+                sh 'git clone https://github.com/hemanth2526/DevOps_project.git'
             }
         }
-        stage('Building our image') {
+
+        stage('Build docker Image') {
             steps {
-                script {
-                    dockerImage = docker.build registry + ":v$BUILD_NUMBER"
-                }
+                sh 'cd /var/lib/jenkins/workspace/pipeline2/DevOps_project'
+                sh 'cp /var/lib/jenkins/workspace/pipeline2/DevOps_project /var/lib/jenkins/workspace/pipeline2'
+                sh 'docker build -t hemanth2526/pipelinetestprod:${BUILD_NUMBER} . '
             }
         }
-        stage('Push Image To DockerHUB') {
-            steps {
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
-                    }
-                }
+
+        stage('Push Image to docker Hub') {
+            steps{
+                sh 'docker push hemanth2526/pipelinetestprod:{BUILD_NUMBER}'
             }
         }
-        stage('Cleaning up') {
-            steps {
-                sh "docker rmi $registry:v$BUILD_NUMBER"
+
+        stage('deploy to docker host'){
+            steps{
+                sh 'docker -H tcp://10.1.1.200 run --rm -dit --name prodweb1 --hostname prodweb1 -p 9000:80 hemanth2526/pipelinetestprod:${BUILD_NUMBER}'
             }
-        }
-        stage('Deploying to Docker Swarm') {
-            steps {
-                sh "docker -H tcp://$dockerSwarmManager service rm testing1 || true"
-                sh "docker -H tcp://$dockerSwarmManager service create --name testing1 -p 8100:80 $registry:v$BUILD_NUMBER"
-            }
-        }
-        stage('Verifying The Deployment') {
-            steps {
-                sh 'curl http://$dockerhost:8100 || exit 1'
-                }
         }
     }
 }
